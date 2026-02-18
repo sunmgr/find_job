@@ -43,14 +43,14 @@ app.use("/api/v1/company",companyRoute)
 app.use("/api/v1/job",jobRoute)
 app.use("/api/v1/application",applicationRoute)
 
-
-if(process.env.NODE_ENV === "production"){
-    app.use(express.static(path.join(__dirname,"../frontend/dist")))
-    app.get("*",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../frontend/dist/index.html")) 
-})
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+    
+   
+    app.get("(.*)", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
+    });
 }
-
 
 app.listen(PORT,()=>{
     connectDB()
