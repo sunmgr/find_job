@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Navbar from './shared/Navbar';
-import { Avatar, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
-import { Contact, Mail, Pen, Globe, Briefcase } from 'lucide-react';
+import { Contact, Mail, Pen, Globe, Briefcase, User2 } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { Label } from './ui/label';
 import AppliedJobTable from './AppliedJobTable';
@@ -29,12 +29,19 @@ const Profile = () => {
         <div className='bg-white border border-slate-100 rounded-[2.5rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.03)]'>
           <div className='flex justify-between items-start'>
             <div className='flex items-center gap-6'>
-              <Avatar className="h-28 w-28 border-4 border-[#f5f1ee] shadow-inner">
-                <AvatarImage src={user?.profile?.profilePhoto} alt="profile" />
-              </Avatar>
+              <Avatar className="h-32 w-32 border-4 border-white shadow-md">
+    <AvatarImage 
+        src={user?.profile?.profilePhoto} 
+        className="object-cover" 
+    />
+    <AvatarFallback className="bg-slate-200">
+        {/* Made the icon bigger too to match the frame */}
+        <User2 className="text-slate-500 w-12 h-12" />
+    </AvatarFallback>
+</Avatar>
               <div className='space-y-1'>
                 <h1 className='font-black text-3xl text-[#0f172a] tracking-tight'>{user?.fullname}</h1>
-                <p className='text-slate-500 font-medium'>Fullstack Developer & Creative Architect</p>
+                <p className='text-slate-500 font-medium'>{user?.profile?.bio}</p>
                 <div className='flex items-center gap-3 pt-2'>
                   <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-none font-bold px-3 py-1">
                     Available for Hire
@@ -65,12 +72,7 @@ const Profile = () => {
               </div>
             </div>
             
-            <div className='space-y-2'>
-                <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Professional Bio</Label>
-                <p className='text-sm text-slate-500 leading-relaxed font-medium'>
-                   {user?.profile?.bio}
-                   </p>
-            </div>
+         
           </div>
 
           

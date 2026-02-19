@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Navbar from '../shared/Navbar';
 import ApplicantsTable from './ApplicantsTable';
 import { useDispatch, useSelector } from 'react-redux';
-import { Users, UserCheck, Clock } from 'lucide-react';
+import { Users, UserCheck, Clock, XCircle } from 'lucide-react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { APPLICATION_API_END_POINT } from '@/utils/constant'
@@ -10,6 +10,19 @@ import { setAllApplicants } from '@/redux/applicationSlice';
 
 const ApplicantsList = () => {
     const {applicants} = useSelector((store)=>store.application);
+    
+    // get the array of applications
+    const allApplications = applicants?.applications || [];
+    
+    //filter to find accepted(shortelisted)
+    const shortlistedCount = allApplications.filter((app)=> app?.status?.toLowerCase()==='accepted').length
+
+    //filter to find rejected
+    const rejectedCount = allApplications.filter((app)=> app?.status?.toLowerCase()==='rejected').length
+
+    const pendingCount = allApplications.filter((app)=> app?.status?.toLowerCase()==='pending').length
+
+
     const params = useParams();
     const dispatch = useDispatch();
     useEffect(()=>{
@@ -43,9 +56,11 @@ const ApplicantsList = () => {
 
                 {/* Stats Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                    <StatCard icon={<Users />} label="Total Applications" value={applicants?.applications?.length || 0} color="text-blue-600" />
-                    <StatCard icon={<UserCheck />} label="Shortlisted" value="0" color="text-emerald-600" />
-                    <StatCard icon={<Clock />} label="Pending Review" value={applicants?.applications?.length || 0} color="text-amber-600" />
+                    <StatCard icon={<Users />} label="Total Applications" value={allApplications?.length || 0} color="text-blue-600" />
+                    <StatCard icon={<UserCheck />} label="Shortlisted" value={shortlistedCount} color="text-emerald-600" />
+                    <StatCard icon={<Clock />} label="Pending Review" value={pendingCount} color="text-amber-600" />
+                    <StatCard icon={<XCircle />} label="Rejected" value={rejectedCount} color="text-red-600" />
+                
                 </div>
 
                 {/* Table Section */}
