@@ -1,35 +1,35 @@
-import {Company} from "../models/company.model.js"
+import {Subject} from "../models/subject.model.js"
 import getDataUri from "../utils/datauri.js"
 import cloudinary from "../utils/cloudinary.js"
 
 
 
 
-export const registerCompany = async(req,res) =>{
+export const registerSubject = async(req,res) =>{
     try {
-        const {companyName} = req.body
-        if(!companyName){
+        const {subjectName} = req.body
+        if(!subjectName){
             return res.status(400).json({
-                message:"Company name is required",
+                message:"subject name is required",
                 success:false
             })
         }
-        let company = await Company.findOne({name:companyName})
-            if(company){
+        let subject = await Subject.findOne({name:subjectName})
+            if(subject){
                 return res.status(400).json({
                     message:"already register",
                     success:false
                 })
             }
-        company = await Company.create({
-            name:companyName,
+        subject = await Subject.create({
+            name:subjectName,
             userId:req.id
         })
 
         return res.status(201).json({
-            message:"Company register successfully",
+            message:"subject register successfully",
             success:true,
-            company,
+            subject,
         })
 
     } catch (error) {
@@ -37,18 +37,18 @@ export const registerCompany = async(req,res) =>{
     }
 }
 
-export const getCompany = async(req,res)=>{
+export const getSubjects = async(req,res)=>{
     try {
         const userId = req.id // login in user id
-        const companies = await Company.find({userId})
-        if(!companies){
+        const subjects = await Subject.find({userId})
+        if(!subjects){
             return res.status(404).json({
-                message:"companies not found",
+                message:"subjects not found",
                 success:false
             })
         }
         return res.status(200).json({
-            companies,
+            subjects,
             success:true,
         })
 
@@ -58,20 +58,20 @@ export const getCompany = async(req,res)=>{
     }
 }
 
-//get company by id 
-export const getCompanyById = async(req,res)=>{
+//getsubect by id
+export const getSubjectById = async(req,res)=>{
     try{    
-        const companyId = req.params.id
-        const company = await Company.findById(companyId)
-        if(!company){
+        const subjectId = req.params.id
+        const subject = await Subject.findById(subjectId)
+        if(!subject){
             return res.status(404).json({
-                message:"company not found",
+                message:"subject not found",
                 success:false
             })
 
         }
         return res.status(200).json({
-            company,
+            subject,
             success:true
         })
 
@@ -80,9 +80,9 @@ export const getCompanyById = async(req,res)=>{
     }
 }
 
-export const updateCompany = async (req, res) => {
+export const updateSubject = async (req, res) => {
     try {
-        const { name, description, website, location } = req.body;
+        const { name, description } = req.body;
         const file = req.file;
         let logo = "";
 
@@ -93,20 +93,20 @@ export const updateCompany = async (req, res) => {
             logo = cloudResponse.secure_url;
         }
 
-        const updateData = { name, description, website, location };
+        const updateData = { name, description };
         if (logo) updateData.logo = logo; // Only add logo if it was updated
 
-        const company = await Company.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        const subject = await Subject.findByIdAndUpdate(req.params.id, updateData, { new: true });
 
-        if (!company) {
+        if (!subject) {
             return res.status(404).json({
-                message: "company not found",
+                message: "subject not found",
                 success: false
             });
         }
         return res.status(200).json({
-            message: "Company information updated successfully.",
-            company, // Return the updated company object!
+            message: "Subject information updated successfully.",
+            subject, // Return the updated subject object!
             success: true
         });
 

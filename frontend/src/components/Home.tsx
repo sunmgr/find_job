@@ -4,32 +4,33 @@ import CategoryCarousel from './CategoryCarousel.tsx'
 import Footer from './Footer.tsx'
 import HeroSection from './HeroSection.tsx'
 
-import LatestJobs from './LatestJobs.tsx'
+import LatestAssignments from './LatestAssigments.tsx'
 import Navbar from './shared/Navbar.tsx'
 import { useNavigate } from 'react-router'
 import { useEffect } from 'react'
-import useGetAlljobs from './hooks/useGetAlljobs.tsx'
+import useGetAllAssignments from './hooks/useGetAllAssignments.tsx'
+
 
 const Home = () => {
-  useGetAlljobs()
+  useGetAllAssignments()
   const {user} = useSelector((store)=>store.auth)
   const navigate = useNavigate()
   useEffect(()=>{
     if(user?.role=="recruiter"){
-      navigate("/admin/companies")
+      navigate("/admin/subjects")
     }
-  },[])
+  }, [user, navigate])
 
   return (
     <div>
         <Navbar/>
         <HeroSection/>
         <CategoryCarousel/>
-        <LatestJobs/>
+        <LatestAssignments/>
         <Footer/>
 
     </div>
   )
-}
+};
 
 export default Home

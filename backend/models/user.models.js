@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
         skills: [{type:String}],
         resume:{type:String},
         resumeOriginalName:{type:String},
-        company:{type:mongoose.Schema.Types.ObjectId ,ref:'Company'}, // only for relation of user and company that he applied
+        subject:{type:mongoose.Schema.Types.ObjectId ,ref:'Subject'}, // only for relation of user and subject that he applied
         profilePhoto:{
             type:String,
             default:""

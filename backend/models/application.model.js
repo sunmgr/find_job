@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const applicationSchema = new mongoose.Schema({
 
-    job:{
+    assignment:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Job",
+        ref:"Assignment",
         required:true
     },
     applicant:{

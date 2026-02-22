@@ -1,67 +1,81 @@
-import { useState } from 'react'
-import { Button } from './ui/button'
-import { Search } from 'lucide-react'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import {setSearchedQuery} from "@/redux/jobSlice"
+import React from 'react';
+import { Sparkles, ArrowRight, Play, Link } from 'lucide-react';
+import { Link as RouterLink } from 'react-router-dom';
 
 const HeroSection = () => {
-
-  const[query,setQuery] = useState("")
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-
-  const searchJobHandler= ()=>{
-    dispatch(setSearchedQuery(query))
-    navigate("/browse")
-  }
-
-
   return (
-    <div className='text-center py-20 bg-white'>
-      <div className='flex flex-col gap-6'>
+    <section className="relative bg-codedex-cream pt-20 pb-32 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
         
-        {/* Sub-badge: Soft Navy/Bronze feel */}
-        <span className='mx-auto px-6 py-2 rounded-full bg-[#f5f1ee] text-[#4a3728] font-bold text-xs uppercase tracking-[0.2em] border border-[#4a3728]/10'>
-          Nepal's Premier Job Network
-        </span>
+        {/* Left Side: Text Content */}
+        <div className="z-10 text-left">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 bg-codedex-yellow border-[3px] border-black px-4 py-1 mb-8 shadow-brutal -rotate-2">
+            <Sparkles size={16} fill="black" />
+            <span className="font-extrabold uppercase tracking-widest text-[10px]">
+              New Season: Semester 2026
+            </span>
+          </div>
 
-        {/* Main Heading: Navy with Brown accent */}
-        <h1 className='text-6xl font-black text-[#0f172a] tracking-tight leading-[1.1]'>
-          Search, Apply &<br /> 
-          <span className='text-[#4a3728]'>Elevate Your Career</span>
-        </h1>
+          <h1 className="text-6xl md:text-8xl font-[900] italic uppercase tracking-tighter leading-[0.9] mb-6">
+            Level Up Your <br />
+            <span className="text-codedex-purple">Grades & Wallet.</span>
+          </h1>
 
-        {/* Description: Muted Slate */}
-        <p className='text-slate-500 font-medium text-lg max-w-2xl mx-auto'>
-          Connecting the finest talent with the most prestigious companies. 
-          Your next executive milestone starts here.
-        </p>
+          <p className="text-xl font-bold text-slate-700 max-w-lg mb-10 leading-relaxed">
+            The ultimate student marketplace. Solve academic quests, earn real-world bounties, and build your legendary portfolio.
+          </p>
 
-        {/* Search Bar: Refined with Shadow and transitions */}
-        <div className="w-full flex justify-center mt-8"> 
-          <div className='flex w-full max-w-2xl bg-white shadow-[0_15px_40px_rgba(0,0,0,0.08)] border border-slate-100 p-2 pl-6 rounded-2xl items-center gap-4 transition-all focus-within:ring-2 focus-within:ring-[#4a3728]/20'>
-            <Search className='h-5 w-5 text-slate-400 shrink-0'/>
-            <input 
-              type="text" 
-              onChange={(e)=>setQuery(e.target.value)}
-              placeholder='Search by title, skill, or company...'
-              className='outline-none border-none w-full bg-transparent text-[#0f172a] font-medium placeholder:text-slate-400'
-            />
-            {/* Action Button: Brown Theme */}
-            <Button onClick={searchJobHandler} className='rounded-xl bg-[#4a3728] hover:bg-[#36281d] text-white px-8 h-12 font-bold shadow-lg shadow-[#4a3728]/30 transition-all active:scale-95'>
-              Find Jobs
-            </Button>
+          <div className="flex flex-wrap gap-6">
+            {/* Primary Action */}
+            <button className="group relative bg-codedex-purple text-white px-10 py-4 font-extrabold uppercase tracking-widest text-sm border-[3px] border-black shadow-brutal hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all cursor-pointer">
+              <span className="flex items-center gap-2">
+              <RouterLink to="/browse">  Start Questing <ArrowRight size={20} strokeWidth={3} /></RouterLink>
+              </span>
+            </button>
+
+            {/* Secondary Action */}
+            <button className="flex items-center gap-3 bg-white px-10 py-4 font-extrabold uppercase tracking-widest text-sm border-[3px] border-black shadow-brutal hover:bg-slate-50 transition-all cursor-pointer">
+              <Play size={18} fill="black" /> Watch Trailer
+            </button>
           </div>
         </div>
 
-        {/* Trust Factor (Small detail for Premium feel) */}
-        <div className='mt-10 flex items-center justify-center gap-8 opacity-40 grayscale'>
-          <p className='text-xs font-bold text-slate-500 uppercase tracking-widest'>Trusted by leading firms in Kathmandu</p>
+        {/* Right Side: "The Floating Card" */}
+        <div className="relative hidden lg:block">
+          {/* Background Decorative Element */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-codedex-purple/10 rounded-full blur-3xl -z-10"></div>
+          
+          {/* Hero Image / Card */}
+          <div className="animate-float relative bg-white border-[4px] border-black p-8 shadow-brutal-lg rotate-3">
+             <div className="flex justify-between items-center mb-6">
+                <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500 border-2 border-black"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500 border-2 border-black"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500 border-2 border-black"></div>
+                </div>
+                <span className="font-black text-xs uppercase tracking-widest bg-codedex-yellow px-2 border-2 border-black">Quest #042</span>
+             </div>
+             
+             <div className="space-y-4">
+                <div className="h-4 w-3/4 bg-slate-200 border-2 border-black"></div>
+                <div className="h-4 w-full bg-slate-200 border-2 border-black"></div>
+                <div className="h-24 w-full bg-codedex-purple/20 border-2 border-black flex items-center justify-center">
+                    <span className="font-black italic text-codedex-purple uppercase text-2xl">Assignment Hub</span>
+                </div>
+                <div className="flex justify-between items-center pt-4">
+                    <span className="font-black text-2xl">REWARD: $150</span>
+                    <div className="bg-black text-white p-2 border-2 border-black">
+                        <ArrowRight size={20} />
+                    </div>
+                </div>
+             </div>
+          </div>
         </div>
-      </div>
-    </div>
-  )
-}
 
-export default HeroSection
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;

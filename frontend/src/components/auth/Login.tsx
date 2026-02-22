@@ -3,153 +3,156 @@ import Navbar from "../shared/Navbar";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { RadioGroup } from "../ui/radio-group";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { USER_API_END_POINT } from "@/utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading,setUser } from "@/redux/authSlice";
-import { Loader2, LockKeyhole } from "lucide-react";
+import { setLoading, setUser } from "@/redux/authSlice";
+import { Loader2, LockKeyhole, Sparkles } from "lucide-react";
 
 const Login = () => {
+    // 1. STATE LOGIC: Set up your input state here
     const [input, setInput] = useState({
         email: "",
         password: "",
         role: "",
     });
 
-    const changeEventHandler = (e) => {
-        setInput({ ...input, [e.target.name]: e.target.value });
-    };
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { loading } = useSelector((store) => store.auth);
-    const {user} = useSelector((store)=>store.auth)
+    const { loading, user } = useSelector((store) => store.auth);
 
+    // 2. CHANGE HANDLER LOGIC: Implement how inputs update the state
+    const changeEventHandler = (e) => {
+        setInput({...input,[e.target.name]:e.target.value})
+    };
+
+    // 3. SUBMIT LOGIC: Handle API call, Redux dispatch, and Navigation
     const submitHandler = async (e) => {
         e.preventDefault();
-        try {
-            dispatch(setLoading(true));
-            const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true,
-            });
-            if (res.data.success) {
-                dispatch(setUser(res.data.user))
-                navigate("/");
 
-                toast.success(res.data.message);
+        const formData = new FormData();
+        formData.append("email", input.email);
+        formData.append("password", input.password);
+        formData.append("role", input.role);
+
+        try{
+            dispatch(setLoading(true))
+
+            const res = await axios.post(`${USER_API_END_POINT}/login`,formData,{headers:{"Content-Type":"application/json"},withCredentials:true})
+
+            if(res.data.success){
+                toast.success(res.data.message)
+                dispatch(setUser(res.data.user))
+                navigate("/")
             }
-        } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
-        } finally {
-            dispatch(setLoading(false));
+
+        }catch(error){
+            console.log(error)
+            toast.error(error.response?.data?.message || "Login failed!")
+        }finally{
+            dispatch(setLoading(false))
         }
     };
+
     useEffect(() => {
         if(user){
             navigate("/")
         }
-    }, []);
+    }, [user,navigate]); 
 
     return (
-        <div className="bg-[#fcfcfd] min-h-screen">
+        <div className="bg-codedex-cream min-h-screen font-mono">
             <Navbar />
-            <div className="flex items-center justify-center px-4 mt-20">
+            <div className="flex items-center justify-center px-4 py-20 max-w-7xl mx-auto">
                 <form 
                     onSubmit={submitHandler} 
-                    className="w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden"
+                    className="w-full max-w-lg bg-white border-[4px] border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
                 >
-                    {/* Form Header */}
-                    <div className="bg-[#0f172a] p-8 text-center">
-                        <div className="bg-[#4a3728] w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <LockKeyhole className="text-white w-6 h-6" />
+                    {/* Header Card */}
+                    <div className="bg-codedex-yellow p-8 border-b-[4px] border-black text-center relative">
+                        <div className="bg-white border-[3px] border-black w-16 h-16 flex items-center justify-center mx-auto mb-4 rotate-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <LockKeyhole className="text-black w-8 h-8" strokeWidth={3} />
                         </div>
-                        <h1 className="font-black text-2xl text-white tracking-tight">Welcome Back</h1>
-                        <p className="text-slate-400 text-xs uppercase tracking-widest mt-2 font-bold">Secure Login Portal</p>
+                        <h1 className="font-[900] text-4xl text-black italic uppercase tracking-tighter">
+                            Hero <span className="text-codedex-purple">Login</span>
+                        </h1>
+                        <p className="text-black/60 text-[11px] uppercase tracking-[0.2em] mt-3 font-black">
+                            Unlock the nexus gate
+                        </p>
                     </div>
 
-                    <div className="p-8">
-                        {/* Email Input */}
-                        <div className="mb-4">
-                            <Label className="text-[#0f172a] font-bold text-sm ml-1">Email Address</Label>
+                    <div className="p-10 space-y-8">
+                        {/* Email Field */}
+                        <div className="space-y-3">
+                            <Label className="text-black font-black uppercase text-xs tracking-[0.2em]">Email Address</Label>
                             <Input
                                 type="email"
                                 value={input.email}
                                 name="email"
                                 onChange={changeEventHandler}
-                                placeholder="sunash@gmail.com"
-                                className="mt-2 rounded-xl border-slate-200 focus:ring-[#4a3728] h-12 font-medium"
+                                placeholder="hero@studygig.com"
+                                className="rounded-none border-[3px] border-black focus-visible:ring-0 focus:border-codedex-purple h-12 font-bold bg-slate-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
                             />
                         </div>
 
-                        {/* Password Input */}
-                        <div className="mb-4">
-                            <Label className="text-[#0f172a] font-bold text-sm ml-1">Password</Label>
+                        {/* Password Field */}
+                        <div className="space-y-3">
+                            <Label className="text-black font-black uppercase text-xs tracking-[0.2em]">Secret Password</Label>
                             <Input
                                 type="password"
                                 value={input.password}
                                 name="password"
                                 onChange={changeEventHandler}
                                 placeholder="••••••••"
-                                className="mt-2 rounded-xl border-slate-200 focus:ring-[#4a3728] h-12 font-medium"
+                                className="rounded-none border-[3px] border-black focus-visible:ring-0 focus:border-codedex-purple h-12 font-bold bg-slate-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
                             />
                         </div>
 
-                        {/* Role Selection */}
-                        <div className="my-6">
-                            <Label className="text-[#0f172a] font-bold text-sm ml-1">Login As</Label>
-                            <RadioGroup className="flex items-center gap-6 mt-3 ml-1">
-                                <div className="flex items-center space-x-2 group cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="student"
-                                        checked={input.role === "student"}
-                                        onChange={changeEventHandler}
-                                        className="w-4 h-4 cursor-pointer accent-[#4a3728]"
-                                        id="student"
+                        {/* Role Selection Card */}
+                        <div className="p-6 border-[3px] border-black bg-codedex-cream shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                             <Label className="text-black font-black uppercase text-[10px] tracking-widest block mb-4">Identify Your Class</Label>
+                             <div className="flex gap-10">
+                                <label className="flex items-center gap-3 cursor-pointer group">
+                                    <input 
+                                        type="radio" name="role" value="student" 
+                                        checked={input.role === "student"} onChange={changeEventHandler}
+                                        className="w-5 h-5 accent-codedex-purple cursor-pointer" 
                                     />
-                                    <Label htmlFor="student" className="text-slate-500 font-bold group-hover:text-[#0f172a] cursor-pointer">Student</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 group cursor-pointer">
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="recruiter"
-                                        checked={input.role === "recruiter"}
-                                        onChange={changeEventHandler}
-                                        className="w-4 h-4 cursor-pointer accent-[#4a3728]"
-                                        id="recruiter"
+                                    <span className="font-black uppercase text-xs group-hover:text-codedex-purple transition-colors">Student</span>
+                                </label>
+                                <label className="flex items-center gap-3 cursor-pointer group">
+                                    <input 
+                                        type="radio" name="role" value="recruiter" 
+                                        checked={input.role === "recruiter"} onChange={changeEventHandler}
+                                        className="w-5 h-5 accent-codedex-purple cursor-pointer" 
                                     />
-                                    <Label htmlFor="recruiter" className="text-slate-500 font-bold group-hover:text-[#0f172a] cursor-pointer">Recruiter</Label>
-                                </div>
-                            </RadioGroup>
+                                    <span className="font-black uppercase text-xs group-hover:text-codedex-purple transition-colors">Recruiter</span>
+                                </label>
+                            </div>
                         </div>
 
-                        {/* Submit Button */}
+                        {/* Action Button */}
                         {loading ? (
-                            <Button className="w-full h-12 rounded-xl bg-[#0f172a] text-white font-bold cursor-not-allowed">
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Button className="w-full h-16 rounded-none bg-slate-300 text-black border-[3px] border-black font-[900] uppercase italic cursor-not-allowed">
+                                <Loader2 className="mr-3 h-6 w-6 animate-spin" />
                                 Authenticating...
                             </Button>
                         ) : (
                             <Button
                                 type="submit"
-                                className="w-full h-12 rounded-xl bg-[#4a3728] hover:bg-[#36281d] text-white font-bold shadow-lg shadow-[#4a3728]/20 transition-all active:scale-95"
+                                className="w-full h-16 rounded-none bg-codedex-purple hover:bg-black text-white font-[900] uppercase italic tracking-widest text-lg border-[3px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all flex items-center justify-center gap-3 group"
                             >
-                                Sign In
+                                Enter Nexus <Sparkles className="group-hover:scale-125 transition-transform" />
                             </Button>
                         )}
 
-                        <div className="mt-8 text-center">
-                            <span className="text-sm text-slate-500 font-medium">
-                                Don't have an account?{" "}
-                                <Link to="/signup" className="text-[#4a3728] font-bold hover:underline underline-offset-4">
-                                    Create Account
+                        <div className="text-center pt-4">
+                            <span className="text-[11px] text-slate-500 font-black uppercase tracking-[0.2em]">
+                                First time here?{" "}
+                                <Link to="/signup" className="text-codedex-purple hover:text-black underline decoration-[3px] underline-offset-8 transition-all">
+                                    Create New Identity
                                 </Link>
                             </span>
                         </div>

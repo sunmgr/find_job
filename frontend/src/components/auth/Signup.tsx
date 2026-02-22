@@ -3,13 +3,12 @@ import Navbar from "../shared/Navbar";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { RadioGroup } from "../ui/radio-group";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { USER_API_END_POINT } from "@/utils/constant"
+import { USER_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
-import { setLoading } from "@/redux/authSlice"
-import { Loader2, UserPlus } from "lucide-react";
+import { setLoading } from "@/redux/authSlice";
+import { Loader2, UserPlus, Sparkles } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Signup = () => {
@@ -21,21 +20,27 @@ const Signup = () => {
         role: "",
         file: "",
     });
+    
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { loading } = useSelector(store => store.auth);
+    const { loading, user } = useSelector(store => store.auth);
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
     };
-
+    
     const changeFileHandler = (e) => {
         setInput({ ...input, file: e.target.files?.[0] });
     };
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        
+        if (!input.role) {
+            return toast.error("Please select a role (Student or Recruiter)");
+        }
+
         const formData = new FormData();
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
@@ -58,144 +63,154 @@ const Signup = () => {
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "Registration failed");
         } finally {
             dispatch(setLoading(false));
         }
     };
-    const {user} = useSelector((store)=>store.auth)
+
+    // Redirect if already logged in
     useEffect(() => {
-            if(user){
-                navigate("/")
-            }
-        }, []);
-    
+        if (user) {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
     return (
-        <div className="bg-[#fcfcfd] min-h-screen">
+        <div className="bg-codedex-cream min-h-screen font-mono">
             <Navbar />
-            <div className="flex items-center justify-center px-4 py-12 max-w-7xl mx-auto">
+            <div className="flex items-center justify-center px-4 py-16 max-w-7xl mx-auto">
                 <form
                     onSubmit={submitHandler}
-                    className="w-full max-w-xl bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden"
+                    className="w-full max-w-2xl bg-white border-[4px] border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
                 >
-                    {/* Header */}
-                    <div className="bg-[#0f172a] p-8 text-center">
-                        <div className="bg-[#4a3728] w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                            <UserPlus className="text-white w-6 h-6" />
+                    {/* Header: Codedex Adventure Style */}
+                    <div className="bg-codedex-purple p-8 border-b-[4px] border-black text-center relative">
+                        <div className="bg-codedex-yellow border-[3px] border-black w-16 h-16 flex items-center justify-center mx-auto mb-4 -rotate-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                            <UserPlus className="text-black w-8 h-8" strokeWidth={3} />
                         </div>
-                        <h1 className="font-black text-2xl text-white tracking-tight">Join the Network</h1>
-                        <p className="text-slate-400 text-xs uppercase tracking-widest mt-2 font-bold">Create your executive profile</p>
+                        <h1 className="font-[900] text-4xl text-white italic uppercase tracking-tighter">
+                            New Hero <span className="text-codedex-yellow">Registration</span>
+                        </h1>
+                        <p className="text-white/80 text-[11px] uppercase tracking-[0.3em] mt-3 font-black">
+                            Choose your path and join the nexus
+                        </p>
                     </div>
 
-                    <div className="p-10">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <Label className="text-[#0f172a] font-bold text-sm ml-1">Full Name</Label>
+                    <div className="p-8 md:p-12 space-y-8">
+                        {/* Name and Email Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-black font-black uppercase text-xs tracking-[0.2em]">Full Name</Label>
                                 <Input
                                     type="text"
                                     value={input.fullname}
                                     name="fullname"
                                     onChange={changeEventHandler}
-                                    placeholder="Sunash Magar"
-                                    className="rounded-xl border-slate-200 focus:ring-[#4a3728] h-11"
+                                    placeholder="E.g. Sunash Magar"
+                                    className="rounded-none border-[3px] border-black focus-visible:ring-0 focus:border-codedex-purple h-12 font-bold text-sm bg-slate-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
+                                    required
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label className="text-[#0f172a] font-bold text-sm ml-1">Email</Label>
+                            <div className="space-y-3">
+                                <Label className="text-black font-black uppercase text-xs tracking-[0.2em]">Email Address</Label>
                                 <Input
                                     type="email"
                                     value={input.email}
                                     name="email"
                                     onChange={changeEventHandler}
-                                    placeholder="sunash@gmail.com"
-                                    className="rounded-xl border-slate-200 focus:ring-[#4a3728] h-11"
+                                    placeholder="hero@studygig.com"
+                                    className="rounded-none border-[3px] border-black focus-visible:ring-0 focus:border-codedex-purple h-12 font-bold text-sm bg-slate-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]"
+                                    required
                                 />
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                            <div className="space-y-2">
-                                <Label className="text-[#0f172a] font-bold text-sm ml-1">Phone Number</Label>
+                        {/* Phone and Password Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <Label className="text-black font-black uppercase text-xs tracking-[0.2em]">Phone Number</Label>
                                 <Input
                                     type="text"
                                     value={input.phoneNumber}
                                     name="phoneNumber"
                                     onChange={changeEventHandler}
-                                    placeholder="+977 98..."
-                                    className="rounded-xl border-slate-200 focus:ring-[#4a3728] h-11"
+                                    placeholder="98XXXXXXXX"
+                                    className="rounded-none border-[3px] border-black focus-visible:ring-0 focus:border-codedex-purple h-12 font-bold text-sm bg-slate-50"
+                                    required
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <Label className="text-[#0f172a] font-bold text-sm ml-1">Password</Label>
+                            <div className="space-y-3">
+                                <Label className="text-black font-black uppercase text-xs tracking-[0.2em]">Secret Password</Label>
                                 <Input
                                     type="password"
                                     value={input.password}
                                     name="password"
                                     onChange={changeEventHandler}
                                     placeholder="••••••••"
-                                    className="rounded-xl border-slate-200 focus:ring-[#4a3728] h-11"
+                                    className="rounded-none border-[3px] border-black focus-visible:ring-0 focus:border-codedex-purple h-12 font-bold text-sm bg-slate-50"
+                                    required
                                 />
                             </div>
                         </div>
 
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 my-8 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                            <RadioGroup className="flex items-center gap-4">
-                                <div className="flex items-center space-x-2 group">
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="student"
-                                        checked={input.role === "student"}
-                                        onChange={changeEventHandler}
-                                        className="accent-[#4a3728] w-4 h-4 cursor-pointer"
-                                        id="student"
-                                    />
-                                    <Label htmlFor="student" className="text-slate-600 font-bold group-hover:text-[#0f172a] cursor-pointer">Student</Label>
+                        {/* Role Selection & File Upload: Brutalist Card */}
+                        <div className="p-6 border-[3px] border-black bg-codedex-cream space-y-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                <div className="space-y-3">
+                                    <Label className="text-black font-black uppercase text-[10px] tracking-widest">Select Your Class</Label>
+                                    <div className="flex gap-8">
+                                        <label className="flex items-center gap-3 cursor-pointer group">
+                                            <input 
+                                                type="radio" name="role" value="student" 
+                                                checked={input.role === "student"} onChange={changeEventHandler}
+                                                className="w-5 h-5 accent-codedex-purple cursor-pointer" 
+                                            />
+                                            <span className="font-black uppercase text-xs group-hover:text-codedex-purple transition-colors">Student</span>
+                                        </label>
+                                        <label className="flex items-center gap-3 cursor-pointer group">
+                                            <input 
+                                                type="radio" name="role" value="recruiter" 
+                                                checked={input.role === "recruiter"} onChange={changeEventHandler}
+                                                className="w-5 h-5 accent-codedex-purple cursor-pointer" 
+                                            />
+                                            <span className="font-black uppercase text-xs group-hover:text-codedex-purple transition-colors">Recruiter</span>
+                                        </label>
+                                    </div>
                                 </div>
-                                <div className="flex items-center space-x-2 group">
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="recruiter"
-                                        checked={input.role === "recruiter"}
-                                        onChange={changeEventHandler}
-                                        className="accent-[#4a3728] w-4 h-4 cursor-pointer"
-                                        id="recruiter"
+
+                                <div className="space-y-3 w-full md:w-64">
+                                    <Label className="text-black font-black uppercase text-[10px] tracking-widest">Avatar Artifact (Image)</Label>
+                                    <Input
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={changeFileHandler}
+                                        className="cursor-pointer border-[2px] border-black bg-white h-10 text-[10px] font-bold file:bg-black file:text-white file:font-black file:uppercase file:px-4 file:h-full file:mr-4 hover:file:bg-codedex-purple transition-all"
                                     />
-                                    <Label htmlFor="recruiter" className="text-slate-600 font-bold group-hover:text-[#0f172a] cursor-pointer">Recruiter</Label>
                                 </div>
-                            </RadioGroup>
-                            <div className="flex flex-col gap-2">
-                                <Label className="text-[#0f172a] font-bold text-xs uppercase tracking-tight">Profile Picture</Label>
-                                <Input
-                                    accept="image/*"
-                                    type="file"
-                                    onChange={changeFileHandler}
-                                    className="cursor-pointer border-none bg-transparent h-auto p-0 text-xs text-[#4a3728] font-bold file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#f5f1ee] file:text-[#4a3728] hover:file:bg-[#4a3728] hover:file:text-white transition-all"
-                                />
                             </div>
                         </div>
 
+                        {/* Submit Button */}
                         {loading ? (
-                            <Button className="w-full h-12 rounded-xl bg-[#0f172a] text-white font-bold cursor-not-allowed">
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Processing Registration...
+                            <Button className="w-full h-16 rounded-none bg-slate-300 text-black border-[3px] border-black font-[900] uppercase italic cursor-not-allowed">
+                                <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                                Forging Your Identity...
                             </Button>
                         ) : (
                             <Button
                                 type="submit"
-                                className="w-full h-12 rounded-xl bg-[#4a3728] hover:bg-[#36281d] text-white font-bold shadow-lg shadow-[#4a3728]/20 transition-all active:scale-95"
+                                className="w-full h-16 rounded-none bg-codedex-yellow hover:bg-black hover:text-white text-black font-[900] uppercase italic tracking-widest text-lg border-[3px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all flex items-center justify-center gap-3 group"
                             >
-                                Create Account
+                                Start Journey <Sparkles className="group-hover:rotate-12 transition-transform" />
                             </Button>
                         )}
 
-                        <div className="mt-8 text-center">
-                            <span className="text-sm text-slate-500 font-medium">
-                                Already have an account?{" "}
-                                <Link to="/login" className="text-[#4a3728] font-bold hover:underline underline-offset-4">
-                                    Login
+                        <div className="text-center pt-4">
+                            <span className="text-xs text-slate-500 font-black uppercase tracking-[0.2em]">
+                                Already a Hero?{" "}
+                                <Link to="/login" className="text-codedex-purple hover:text-black underline decoration-[3px] underline-offset-8 transition-all">
+                                    Login to Nexus
                                 </Link>
                             </span>
                         </div>

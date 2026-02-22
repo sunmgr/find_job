@@ -1,12 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* Colors */
+  --color-codedex-cream: #fdfcf0;
+  --color-codedex-purple: #7c3aed;
+  --color-codedex-yellow: #ffde59;
+  
+  /* The "Brutal" Shadows */
+  --shadow-brutal: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  --shadow-brutal-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
 }
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  /* ... other shadcn variables will go here eventually ... */
+@layer base {
+  body {
+    background-color: var(--color-codedex-cream);
+    color: #1a1a1a;
+    /* Using a standard system font stack that looks clean */
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+}
+@keyframes floating {
+  0% { transform: translate(0,  0px); }
+  50%  { transform: translate(0, 15px); }
+  100% { transform: translate(0, -0px); }
+}
+
+.animate-float {
+  animation: floating 3s ease-in-out infinite;
 }

@@ -4,18 +4,20 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './components/auth/Login'
 import Signup from './components/auth/Signup'
 import Home from './components/Home'
-import Jobs from './components/Jobs'
+import Assignments from './components/Assignments'
 import Browse from './components/Browse'
 import Profile from './components/Profile'
-import JobDescription from './components/JobDescription'
-import useGetAlljobs from './components/hooks/useGetAlljobs'
-import Companies from './components/admin/Companies'
-import CompanyCreate from './components/admin/CompanyCreate'
-import CompanySetup from './components/admin/CompanySetup'
-import AdminJobs from './components/admin/AdminJobs'
-import PostJob from './components/admin/PostJob'
+import AssignmentDescription from './components/AssignmentDescription'
+import useGetAllAssignments from './components/hooks/useGetAllAssignments'
+import Subjects from './components/admin/Subjects'
+import SubjectCreate from './components/admin/SubjectCreate'
+import SubjectSetup from './components/admin/SubjectSetup'
+import AdminAssignments from './components/admin/AdminAssignments'
+import PostAssignment from './components/admin/PostAssignment'
 import ApplicantsList from './components/admin/ApplicantsList'
 import ProtectedRoute from './components/admin/ProdectedRoute'
+import Battles from './components/Battles'
+import Heroes from './components/Heroes'
 
 const appRouter = createBrowserRouter([
   {
@@ -31,45 +33,55 @@ const appRouter = createBrowserRouter([
   element:<Signup/>
 }, 
 {
-  path:"/jobs",
-  element:<Jobs/>
+  path:"/assignments",
+  element:<Assignments/>
 },
 {
   path:"/description/:id",
-  element:<JobDescription/>
+  element:<AssignmentDescription/>
 },
 {
   path:"/browse",
   element:<Browse/>
 },
 {
-  path:"/profile",
+  path:"/profile/:id?",
   element:<Profile/>
+},
+{
+  path:"/battles",
+  element:<Battles/>
+}
+,
+{
+  path:"/leaderboard",
+  element:<Heroes/>
 },
 
 //paths for admin site
 {
-  path:"/admin/companies",
-  element:<ProtectedRoute><Companies/></ProtectedRoute>
+  path:"/admin/subjects",
+  element:<ProtectedRoute><Subjects/></ProtectedRoute>
 },
 {
   
-  path:"/admin/companies/create",
-  element:<ProtectedRoute><CompanyCreate/></ProtectedRoute>
+  path:"/admin/subjects/create",
+  element:<ProtectedRoute><SubjectCreate/></ProtectedRoute>
 },
 {
   
-  path:"/admin/companies/:id",
-  element:<ProtectedRoute><CompanySetup/></ProtectedRoute>
-},{
-path:"/admin/jobs",
-element: <ProtectedRoute><AdminJobs/></ProtectedRoute>
-},{
-path:"/admin/jobs/create",
-element:<ProtectedRoute><PostJob/></ProtectedRoute>
+  path:"/admin/subjects/:id",
+  element:<ProtectedRoute><SubjectSetup/></ProtectedRoute>
 },
 {
-path:"/admin/jobs/:id/applicants",
+path:"/admin/assignments",
+element: <ProtectedRoute><AdminAssignments/></ProtectedRoute>
+},{
+path:"/admin/assignments/create",
+element:<ProtectedRoute><PostAssignment/></ProtectedRoute>
+},
+{
+path:"/admin/assignments/:id/applicants",
 element:<ProtectedRoute><ApplicantsList/></ProtectedRoute>
 },
 
@@ -83,7 +95,7 @@ element:<ProtectedRoute><ApplicantsList/></ProtectedRoute>
 
 function App() {
 
-useGetAlljobs()
+useGetAllAssignments()
 
   return (
     <>

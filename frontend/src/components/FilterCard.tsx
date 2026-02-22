@@ -1,56 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
-import { Separator } from './ui/separator';
 import { useDispatch } from 'react-redux';
-import { setSearchedQuery } from '@/redux/jobSlice';
+import { setSearchedQuery } from '@/redux/assignmentSlice';
+import { Search, SlidersHorizontal, XCircle } from 'lucide-react';
 
 const filterData = [
   {
-    filterType: "Location",
-    array: ["Bhakatapur", "Kathmandu", "Dharan", "Pokhara"]
+    filterType: "Subject",
+    array: ["Mathematics", "Science", "Computer Science", "Physics", "English"]
   },
   {
-    filterType: "Industry",
-    array: ["Frontend Developer", "Backend Developer", "Fullstack Developer"]
-  },
-  {
-    filterType: "Salary",
-    array: ["0-10k", "10k-20k", "20k-30k"]
+    filterType: "Budget Range",
+    array: ["Under 500", "500-1000", "1000-5000", "5000+"]
   }
 ];
 
 const FilterCard = () => {
+  const [selectedValue, setSelectedValue] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const dispatch = useDispatch();
 
-  const [selectedValue,setSelectedValue] = useState("")
-  const dispatch = useDispatch()
-  
+  const changeHandler = (value) => {
+    setSelectedValue(value);
+    dispatch(setSearchedQuery(value));
+  };
 
-  const changeHandler = (value)=>{
-    setSelectedValue(value)
-  }
-
-  useEffect(()=>{
-    dispatch(setSearchedQuery(selectedValue))
-  },[selectedValue])
+  const clearFilters = () => {
+    setSelectedValue("");
+    setSearchText("");
+  };
+  // Inside FilterCard.jsx
+useEffect(() => {
+  // If user is typing, use that. Otherwise use the radio selection.
+  const query = searchText.trim() !== "" ? searchText : selectedValue;
+  console.log("Updating search query to:", query);
+  dispatch(setSearchedQuery(query));
+}, [selectedValue, searchText, dispatch]);
 
 
   return (
-    <div className='w-full bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm'>
-      {/* Header */}
-      <div className='flex items-center justify-between mb-2'>
-        <h1 className='font-black text-2xl text-[#0f172a] tracking-tight'>
-          Filter Jobs
-        </h1>
-      </div>
-      <p className='text-xs text-slate-400 font-medium mb-6 uppercase tracking-widest'>Refine your search</p>
+    <div className='w-full bg-white border-[3px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 font-sans'>
       
-      <RadioGroup  value={selectedValue} onValueChange={changeHandler}>
+      {/* Search Section */}
+      <div className="mb-8">
+        <h2 className="text-xs font-black uppercase tracking-[0.2em] text-codedex-purple mb-4 flex items-center gap-2">
+          <Search size={14} strokeWidth={3} /> Search Assignments
+        </h2>
+        <div className="relative group">
+          <input 
+            type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Search titles..."
+            className="w-full bg-slate-50 border-[3px] border-black p-3 pr-10 font-bold text-sm focus:outline-none focus:bg-white transition-all focus:shadow-[4px_4px_0px_0px_rgba(109,40,217,1)]"
+          />
+          {searchText && (
+            <XCircle 
+              size={18} 
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-black" 
+              onClick={() => setSearchText("")}
+            />
+          )}
+        </div>
+      </div>
+
+      <div className='flex items-center justify-between mb-6'>
+        <h1 className='font-black text-xl text-black uppercase italic tracking-tighter flex items-center gap-2'>
+          <SlidersHorizontal size={20} /> Filters
+        </h1>
+        {(selectedValue || searchText) && (
+          <button 
+            onClick={clearFilters}
+            className="text-[10px] font-black uppercase text-codedex-purple hover:underline"
+          >
+            Clear All
+          </button>
+        )}
+      </div>
+      
+      <RadioGroup value={selectedValue} onValueChange={changeHandler}>
         {filterData.map((data, index) => (
           <div key={index} className='mb-8 last:mb-0'>
-            {/* Category Title */}
-            <h2 className='font-bold text-sm text-[#4a3728] mb-4 flex items-center gap-2'>
-              <span className='w-1 h-4 bg-[#4a3728] rounded-full inline-block'></span>
+            <h2 className='font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 mb-4'>
               {data.filterType}
             </h2>
 
@@ -62,11 +94,11 @@ const FilterCard = () => {
                     <RadioGroupItem 
                       value={item} 
                       id={itemId} 
-                      className="border-slate-300 text-[#4a3728] focus:ring-[#4a3728] w-4 h-4"
+                      className="border-2 border-black text-codedex-purple focus:ring-black w-4 h-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] data-[state=checked]:shadow-none data-[state=checked]:translate-x-[1px] data-[state=checked]:translate-y-[1px]"
                     />
                     <Label 
                       htmlFor={itemId} 
-                      className="text-sm font-semibold text-slate-500 group-hover:text-[#0f172a] cursor-pointer transition-colors"
+                      className="text-sm font-bold text-slate-600 group-hover:text-black cursor-pointer transition-colors"
                     >
                       {item}
                     </Label>
@@ -74,11 +106,6 @@ const FilterCard = () => {
                 );
               })}
             </div>
-            
-            {/* Subtle Divider between groups */}
-            {index !== filterData.length - 1 && (
-              <Separator className="mt-6 bg-slate-50" />
-            )}
           </div>
         ))}
       </RadioGroup>

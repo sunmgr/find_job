@@ -6,6 +6,8 @@ const authSlice = createSlice({
         loading : false,
         user:null
     },
+    heroes: [],
+vanguards: [],
     reducers:{
         //actions
         setLoading:(state,action)=>{
@@ -13,10 +15,16 @@ const authSlice = createSlice({
         },
         setUser:(state,action) =>{
             state.user = action.payload
-        }
+        },
+        setHeroes: (state, action) => {
+    state.heroes = action.payload;
+},
+setVanguards: (state, action) => {
+    state.vanguards = action.payload;
+}
     }
 })
 
-export const {setLoading,setUser} = authSlice.actions
+export const {setLoading,setUser,setHeroes,setVanguards} = authSlice.actions
 
 export default authSlice.reducer
